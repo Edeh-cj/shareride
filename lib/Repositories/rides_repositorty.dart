@@ -67,7 +67,7 @@ class RidesRepository {
         return (value.get('participants') as List).length;
       });
 
-      if (participantsCount <= 7) {
+      if (participantsCount < 7) {
         if (balance >= ride.price) {
           transaction.update(documentReference, {
             'participants': participants + [uid]
