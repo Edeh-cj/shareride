@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:931356082264:android:56ee6d4336de18a77eca2d",
+        "mobilesdk_app_id": "1:931356082264:android:4859e26ffe62376e7eca2d",
         "android_client_info": {
-          "package_name": "com.example.shareride"
+          "package_name": "com.shareride.shareride"
         }
       },
       "oauth_client": [],
