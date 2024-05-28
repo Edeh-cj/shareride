@@ -10,6 +10,7 @@ import 'package:shareride/providers/rides_provider.dart';
 import 'package:shareride/providers/whatsapp_provider.dart';
 import 'package:shareride/screens/deposit_page.dart';
 import 'package:shareride/utilities/app_colors.dart';
+import 'package:shareride/utilities/app_snackbar.dart';
 import '../models/ride.dart';
 import '../providers/locations_provider.dart';
 import '../providers/service_time_provider.dart';
@@ -134,8 +135,17 @@ class _HomepageState extends State<Homepage> {
                             'Customer Support', 
                             'assets/customer_support_icon.png', 
                             Icons.mark_chat_unread_sharp,
-                            (){
-                              context.read<WhatsappProvider>().switchtoWhatsapp();
+                            () async{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                AppSnackBar.normal('Switching to WhatsApp')
+                              );                              
+                              await context.read<WhatsappProvider>().switchtoWhatsapp().catchError(
+                                (e){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    AppSnackBar.normal('failed to switch to whatsapp')
+                                  );
+                                }
+                              );
                             }),
                           // gridCard('Log Out', '', Icons.power_settings_new, () => null)
                         ],

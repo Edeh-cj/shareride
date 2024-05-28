@@ -140,7 +140,7 @@ class _TicketPageState extends State<TicketPage> {
                 overflow: TextOverflow.clip,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 32.sp,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Inter'
                 ),
@@ -174,7 +174,7 @@ class _TicketPageState extends State<TicketPage> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 32.sp,
+                  fontSize: 28.sp,
                   // letterSpacing: 1.sp,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Inter'

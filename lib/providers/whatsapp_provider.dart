@@ -27,7 +27,7 @@ class WhatsappProvider with ChangeNotifier {
   //   return await _repository.createAccessCode(_secretKey, email, amount, ref);
   // }
 
-  switchtoWhatsapp()async{
+  Future switchtoWhatsapp()async{
     await _repository.switchtoWhatsapp(whatsappNumber);
   }
 }
