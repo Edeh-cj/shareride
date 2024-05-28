@@ -27,7 +27,7 @@ class AltButton extends StatelessWidget {
       left: 16.w,
       right: 16.w,
     ),
-    height: 35.h,
+    height: 40.h,
     width: double.maxFinite,
     decoration: BoxDecoration(
       color: isLocked? const Color.fromRGBO(161, 238, 255, 0.2): const Color.fromRGBO(161, 238, 255, 1),
@@ -55,7 +55,7 @@ class AltButton extends StatelessWidget {
       left: 16.w,
       right: 16.w,
     ),
-    height: 35.h,
+    height: 40.h,
     width: double.maxFinite,
     decoration: BoxDecoration(
       color: const Color.fromRGBO(161, 238, 255, 1),
@@ -76,7 +76,7 @@ class AltButton extends StatelessWidget {
       left: 16.w,
       right: 16.w,
     ),
-    height: 35.h,
+    height: 40.h,
     width: double.maxFinite,
     decoration: BoxDecoration(
       color: AppColors.backgroundGrey,
