@@ -420,10 +420,9 @@ class _HomepageState extends State<Homepage> {
               ),
               Expanded(
                 flex: 2,
-                 child: IconButton(
+                  child: Icon(
+                  Icons.more_horiz,
                   color: AppColors.mainBlue,
-                  onPressed: (){}, 
-                  icon: const Icon(Icons.more_horiz_rounded)
                 )
               ),
               
