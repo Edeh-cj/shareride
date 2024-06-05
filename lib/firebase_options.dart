@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '931356082264',
     projectId: 'share-ride-f71cd',
     storageBucket: 'share-ride-f71cd.appspot.com',
-    iosBundleId: 'com.example.shareride',
+    iosBundleId: 'com.shareride.shareride',
   );
 }
