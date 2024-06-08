@@ -57,7 +57,6 @@ class _HomepageState extends State<Homepage> {
                       padding: EdgeInsets.symmetric(horizontal: 12.w),
                       child: _appbar,
                     ),
-                    SizedBox(height: 4.h,),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: 8.h,
@@ -67,7 +66,7 @@ class _HomepageState extends State<Homepage> {
                         context.watch<UserProvider>().user.balance.toString()
                       ),
                     ),
-                    SizedBox(height: 8.h,),
+                    SizedBox(height: 12.h,),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 14.0.w),
                       child: Row(
@@ -420,10 +419,9 @@ class _HomepageState extends State<Homepage> {
               ),
               Expanded(
                 flex: 2,
-                 child: IconButton(
+                  child: Icon(
+                  Icons.more_horiz,
                   color: AppColors.mainBlue,
-                  onPressed: (){}, 
-                  icon: const Icon(Icons.more_horiz_rounded)
                 )
               ),
               
