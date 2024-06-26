@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shareride/models/location.dart';
 import 'package:shareride/utilities/app_colors.dart';
 import 'package:shareride/utilities/app_text_styles.dart';
@@ -72,7 +73,10 @@ class AppFormDecoration {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, fontFamily: 'Spartan'),
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+              fontSize: 13.sp, 
+              fontFamily: 'Spartan'),
           ),
           const SizedBox(height: 5),
           DropdownButtonFormField<Location?>(
@@ -104,15 +108,17 @@ class AppFormDecoration {
               constraints: BoxConstraints.tight(
                 const Size(double.maxFinite, 42),
               ),
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(217, 217, 217, 1),
-                ),
+              filled: true,
+              fillColor: AppColors.backgroundFaint,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide.none,
               ),
               hintText: innerLabel,
-              hintStyle: const TextStyle(
-                fontSize: 13,
+              hintStyle: TextStyle(
+                fontSize: 10,
+                color: AppColors.searchFieldHint,
+                
               ),
             ),
           ),

@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:shareride/Repositories/rides_repositorty.dart';
+import 'package:shareride/models/alarm_time.dart';
 import 'package:shareride/models/location.dart';
 import 'package:shareride/models/region_ride.dart';
 import 'package:shareride/models/ride.dart';
@@ -70,13 +72,13 @@ class RidesProvider with ChangeNotifier {
     );
   }
 
-  Future<void> joinRide({required Ride ride, required String userid, required String name, required String phonenumber}) async{
+  Future<void> joinRide({required Ride ride, required String userid, required String name, required String phonenumber, required AlarmTime? alarmTime}) async{
     await _repository.joinRide(
       ride: ride,
       uid: userid,
       name: name,
       phonenumber: phonenumber
-    );
+    ).then((value) => setAlarm(alarmTime, ride.time));
   }
 
   Future<void> cancelRide({required Ride ride, required String userid})async{
@@ -93,21 +95,56 @@ class RidesProvider with ChangeNotifier {
     
   }
 
-  // String rideScheduleNote(String time){
-  //   String arrivalMinutes = (60-_timeToRide).toString();
-  //   return switch (time) {
-  //     '7am' => 'Bus arrives 6:${arrivalMinutes}am',
-  //     '8am' => 'Bus arrives 7:${arrivalMinutes}am',
-  //     '9am' => 'Bus arrives 8:${arrivalMinutes}am',
-  //     '10am' => 'Bus arrives 9:${arrivalMinutes}am',
-  //     '11am' => 'Bus arrives 10:${arrivalMinutes}am',
-  //     '12pm' => 'Bus arrives 11:${arrivalMinutes}am',
-  //     '1pm' => 'Bus arrives 12:${arrivalMinutes}pm',
-  //     '2pm' => 'Bus arrives 1:${arrivalMinutes}pm',
-  //     '3pm' => 'Bus arrives 2:${arrivalMinutes}pm',
-  //     '4pm' => 'Bus arrives 3:${arrivalMinutes}pm',
-  //     String() => 'Bus arrives 3:40pm'
-  //   };
+
+  void setAlarm (AlarmTime? alarmTime, String timeKey){
+    if (alarmTime != null) {
+      FlutterAlarmClock.createAlarm(
+        title: 'ShareRide. ⏰Almost time!! 🏃🚐 ',
+        hour: alarmTime.hour, minutes: alarmTime.minutes
+      );
+    }
+  }
+
+  // void setAlarmMorn(String schedule, DateTime now){
+  //   int alarmTime = scheduletoint(schedule); 
+  //   FlutterAlarmClock.createAlarm(
+  //     title: 'GoEasy, ⏰Almost time!! 🏃🚐 (bus arrives at $alarmTime:30) 🏃🚐',
+  //     hour: alarmTime, minutes: 0);
+  // }
+
+  // bool canBook(String timeSchedule, List<Schedule> list){
+  //   List<String> tick = list.map((e) => e.schedule).toList();
+  //   bool isMorn = (timeSchedule == '7am') || (timeSchedule == '8am') || (timeSchedule == '9am') || (timeSchedule == '10am');
+  //   bool canBookNoon = (tick.where((element) => element== '1pm' || element== '2pm' || element== '3pm' || element== '4pm' )).length < 2;
+  //   bool canBookMorn = (tick.where((element) => element== '7am' || element== '8am' || element== '9am' || element== '10am' )).length < 2;
+  //   if ((isMorn && canBookMorn) || (!isMorn && canBookNoon)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // int scheduletoint(String schedule) {
+  //   switch (schedule) {
+  //     case '7am':
+  //       return 6;
+  //     case '8am':
+  //       return 7;
+  //     case '9am':
+  //       return 8;
+  //     case '10am':
+  //       return 9;
+  //     case '1pm':
+  //       return 13;
+  //     case '2pm':
+  //       return 14;
+  //     case '3pm':
+  //       return 15;
+  //     case '4pm':
+  //       return 16;
+        
+  //     default: return 0;
+  //   }
   // }
   
 }

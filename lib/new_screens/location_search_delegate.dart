@@ -18,7 +18,9 @@ class LocationSearchDelegate extends SearchDelegate {
   String? get searchFieldLabel => 'Search by location, time';
 
   @override
-  TextStyle? get searchFieldStyle => const TextStyle();
+  TextStyle? get searchFieldStyle => const TextStyle(
+    fontSize: 12
+  );
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -373,7 +375,7 @@ class LocationSearchDelegate extends SearchDelegate {
               left: 32.w,
               right: 32.w
             ),
-            child: AppButton(label: 'Join @ ${x.price}', state: ButtonState.normal),
+            child: AppButton(label: 'Join @ ${x.price}', state: ButtonState.normal, height: 40.h,),
           )
         ],
       ),

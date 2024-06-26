@@ -15,4 +15,10 @@ class AppColors {
   static Color get errorRed => const Color.fromRGBO(176, 0, 32, 1);
   static Color get emptyListText => const Color.fromRGBO(118, 118, 118, 1);
 
+  static Color get black => const Color.fromRGBO(0,0,0, 1);
+  static Color get searchFieldHint => const Color.fromRGBO(0,0,0, 0.5);
+  static Color get backgroundOpaque => const Color.fromRGBO(246, 246, 246, 1);
+  static Color get backgroundFaint => const Color.fromRGBO(246, 246, 246, 0.7);
+  static Color get divider => const Color.fromRGBO(158, 158, 158, 1);  
+
 }

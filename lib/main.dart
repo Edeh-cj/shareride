@@ -63,10 +63,10 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'Spartan'
       ),
       home: Center(
-          child: context.watch<UserProvider>().uid != null
-              ? const Homepage()
-              : const SigninPage()
-            ),
+        child: context.watch<UserProvider>().uid != null
+            ? const Homepage()
+            : const SigninPage()
+          ),
     );
   }
 }

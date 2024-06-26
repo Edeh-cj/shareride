@@ -37,197 +37,210 @@ class _CreateRideFormSheetState extends State<CreateRideFormSheet> {
       buttonState = state;
     });
   }
+
+  Widget get _space => SizedBox(height: 32.h,);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 500.h, 
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 2,
-            offset: const Offset(0, -2)
-          )
-        ],
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(15), topRight: Radius.circular(15)
-        ),
-        
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.maxFinite,
-            height: 15.h,
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 8.0.h),
-                child: Icon(
-                  Icons.drag_handle,
-                  color: AppColors.mainBlue,
-                ),
-              ),
+    return Column(
+      children: [
+        const Expanded(child: SizedBox()),
+        Container(
+          width: double.maxFinite,
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 24.h),
+          margin: EdgeInsets.symmetric(horizontal: 8.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: const Color.fromRGBO(158, 158, 158, 1),
+              width: 0.2
             ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10)
+            ),
+            
           ),
-          Expanded(
-            child: ListView(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Create Ride',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w400
+                ),
+              ),        
+              _space,              
+              Form(
+                key: _createRideFormKey,
+                child: Column(
                   children: [
-                    
-                    const Padding(
-                      padding: EdgeInsets.only(top: 30.0, left: 24),
-                      child: Text(
-                        'Create New Ride',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600
-                        )
-                      ),
+                    AppFormDecoration.dropdownFormfield(
+                      'Coming from', 
+                      'Chizaram Lodge, Hilltop', 
+                      widget.locations.where(
+                        (element) => element.isRoute == false 
+                        // && element.region.toLowerCase() == widget.regionRide.region.toLowerCase()
+                      ).toList(), 
+                      _fromValue, 
+                      (p0) {
+                        setState(() {
+                          _fromValue = p0;
+                          _toList = context.read<LocationsProvider>().locations.where(
+                            (e) => e.isInsideSchool == !p0!.isInsideSchool && e.isRoute
+                            ).toList();
+                        });
+                      },
+                      (){
+                        setState(() {
+                          _toValue = null;
+                          _toList = [];
+                        });
+                      }
+              
                     ),
-                    
-                    Padding(
-                      padding: AppFormDecoration.padding,
-                      child: Form(
-                        key: _createRideFormKey,
-                        child: Column(
-                          children: [
-                            AppFormDecoration.dropdownFormfield(
-                              'From', 
-                              'Chizaram Lodge, Hilltop', 
-                              widget.locations.where(
-                                (element) => element.isRoute == false 
-                                // && element.region.toLowerCase() == widget.regionRide.region.toLowerCase()
-                              ).toList(), 
-                              _fromValue, 
-                              (p0) {
-                                setState(() {
-                                  _fromValue = p0;
-                                  _toList = context.read<LocationsProvider>().locations.where(
-                                    (e) => e.isInsideSchool == !p0!.isInsideSchool && e.isRoute
-                                    ).toList();
-                                });
-                              },
-                              (){
-                                setState(() {
-                                  _toValue = null;
-                                  _toList = [];
-                                });
-                              }
-                
-                            ),
-                            AppFormDecoration.dropdownFormfield(
-                              'To', 
-                              'Palg, School', 
-                              _toList,  
-                              _toValue, 
-                              (p0) {
-                                setState(() {
-                                  _toValue = p0;
-                                });
-                              },
-                              (){}
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Time',
-                                  style: TextStyle(
-                                    fontSize: 13
-                                  ),            
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                DropdownButtonFormField<String?>( 
-                                  style: const TextStyle(fontSize: 13, color: Colors.black),
-                                  value: _timeValue,         
-                                  items: List.generate(
-                                    context.read<ServiceTimeProvider>().timeData.keys.toList().length , 
-                                    (index) => DropdownMenuItem(
-                                      value: context.read<ServiceTimeProvider>().timeData.keys.toList()[index],
-                                      child: Text(
-                                        context.read<ServiceTimeProvider>().timeData.keys.toList()[index],
-                                        overflow: TextOverflow.visible,
-                                      ),
-                                    )
-                                  ), 
-                                  onChanged: (p0) {
-                                    setState(() {
-                                      _timeValue = p0;
-                                    });
-                                  },          
-                                  validator: (s){
-                                    if (s == null ) {
-                                      return 'invalid field';              
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(0),
-                                  elevation: 0,
-                                  iconSize: 12,
-                                  decoration: InputDecoration(
-                                    constraints: BoxConstraints.tight(
-                                      const Size(double.maxFinite, 36)
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(0),
-                                      borderSide: const BorderSide(
-                                        color: Color.fromRGBO(217, 217, 217, 1)
-                                      )
-                                    ),
-                                    hintText: '8am',
-                                    hintStyle: const TextStyle(
-                                      fontSize: 13,
-                                    )
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                )
-                              ],
-                            ),
-                            AppFormDecoration.formField(
-                              _nameController, 
-                              'Display Name', 
-                              null, 
-                              (p0) {
-                                if (p0 == null || p0.isEmpty) {
-                                  return 'invalid field';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              TextInputType.name
-                            ),
-
-                            GestureDetector(
-                              onTap: _createRideFunction,
-                              child: AppButton(
-                                label: 'Create', 
-                                state: buttonState,
-                                
+                    AppFormDecoration.dropdownFormfield(
+                      'Going to', 
+                      'Palg, School', 
+                      _toList,  
+                      _toValue, 
+                      (p0) {
+                        setState(() {
+                          _toValue = p0;
+                        });
+                      },
+                      (){}
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Time/Schedule',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w300,
+                            color: AppColors.black
+                          ),            
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        DropdownButtonFormField<String?>( 
+                          style: const TextStyle(fontSize: 13, color: Colors.black),
+                          value: _timeValue,         
+                          items: List.generate(
+                            context.read<ServiceTimeProvider>().serviceTimeList.length , 
+                            (index) => DropdownMenuItem(
+                              value: context.read<ServiceTimeProvider>().serviceTimeList.map((e) => e.key).toList()[index],
+                              child: Text(
+                                context.read<ServiceTimeProvider>().serviceTimeList.map((e) => e.key).toList()[index],
+                                overflow: TextOverflow.visible,
                               ),
                             )
-          
-                          ],
-                        ) 
-                      ),
+                          ), 
+                          onChanged: (p0) {
+                            setState(() {
+                              _timeValue = p0;
+                            });
+                          },          
+                          validator: (s){
+                            if (s == null ) {
+                              return 'invalid field';              
+                            } else {
+                              return null;
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(0),
+                          elevation: 0,
+                          iconSize: 12,
+                          decoration: InputDecoration(
+                            constraints: BoxConstraints.tight(
+                              const Size(double.maxFinite, 42),
+                            ),
+                            filled: true,
+                            fillColor: AppColors.backgroundFaint,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: '8am',
+                            hintStyle: TextStyle(
+                              fontSize: 10.sp,
+                              color: AppColors.searchFieldHint,
+                              
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16.h,
+                        )
+                      ],
                     ),
-
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Display name',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w300,
+                            color: AppColors.black
+                          ),            
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            constraints: BoxConstraints.tight(
+                              const Size(double.maxFinite, 42),
+                            ),
+                            filled: true,
+                            fillColor: AppColors.backgroundFaint,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Joshua',
+                            hintStyle: TextStyle(
+                              fontSize: 10.sp,
+                              color: AppColors.searchFieldHint,
+                              
+                            ),
+                          ),
+                          validator: (p0) {
+                            if (p0 == null || p0.isEmpty) {
+                              return 'invalid field';
+                            } else {
+                              return null;
+                            }
+                          },
+                          keyboardType: TextInputType.name,
+                        ),
+                      ],
+                    ),
+                    _space,
+        
+                    GestureDetector(
+                      onTap: _createRideFunction,
+                      child: AppButton(
+                        label: 'Create', 
+                        state: buttonState,
+                        height: 40.h,
+                        
+                      ),
+                    )
+              
                   ],
-                ),
-              ],
-            ),
+                ) 
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

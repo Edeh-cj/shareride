@@ -220,6 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: AppButton(
                                   label: 'Register', 
                                   state: _buttonState,
+                                  height: 40.h,
                                 ),
                               )
                             ],

@@ -3,7 +3,7 @@ import 'package:shareride/utilities/app_colors.dart';
 import 'package:shareride/utilities/app_text_styles.dart';
 
 class AppButton extends StatelessWidget {
-  const AppButton ({super.key, required this.label, required this.state});
+  const AppButton ({super.key, required this.label, required this.state, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AppButton extends StatelessWidget {
     );
   }
 
-  final Size buttonSize = const Size(double.maxFinite, 40);
+  Size get buttonSize => Size(double.maxFinite, height);
 
   final int waitingTime = 2;
 
@@ -84,6 +84,7 @@ class AppButton extends StatelessWidget {
 
   final String label;
   final ButtonState state;
+  final double height;
 }
 
 enum ButtonState {inactive, loading, error, success, normal}

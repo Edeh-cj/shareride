@@ -17,6 +17,7 @@ class RegionsPage extends StatefulWidget {
 }
 
 class _RegionsPageState extends State<RegionsPage> {
+  Widget _spacing(double height) => SizedBox(height: height,);
   @override
   Widget build(BuildContext context) {
     List<Ride> allRides = context.watch<RidesProvider>().allRides;
@@ -24,116 +25,99 @@ class _RegionsPageState extends State<RegionsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            const  _AppBar(),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundGrey,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: Offset(0, -4.h),
-                      blurRadius: 4.h
-                    )
-                  ]
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            children: [
+              _spacing(18.h),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 12.sp,
+                      child: Icon(Icons.arrow_back_ios, color: const Color.fromRGBO(27, 27, 31, 1),size: 16.sp,)),
+                  ),
+                  SizedBox(width: 8.w,),
+                  Text(
+                    'All Rides',
+                    style: TextStyle(
+                      color: const Color.fromRGBO(27, 27, 31, 1),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400
+                    ),
+                  )
+                ],
+              ),
+              _spacing(24.h),
+              GestureDetector(
+                onTap: () async => await showSearch(
+                  context: context,
+                  delegate: RidesSearchDelegatebyId(rides: context.read<RidesProvider>().allRides)
                 ),
+                child: _searchField
+              ),
+              _spacing(24.h),
+              Expanded(
                 child: FractionallySizedBox(
                   widthFactor: 1,
                   heightFactor: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0.w, top: 16.h, bottom: 16.h),
-                        child: Text(
-                          'All Rides',
-                          style: TextStyle(
-                            color: const Color.fromRGBO(27, 27, 31, 1),
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.w600
-                          ),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: 12.h, left: 12.w, right: 12.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundOpaque.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(5.r)
+                      ),
+                      child: Column(
+                        children: List.generate(
+                          regions.length, 
+                          (index) => _listCard(
+                            regionName: regions[index],
+                            rideCount: allRides.where(
+                              (element) => element.region.toLowerCase() == regions[index].toLowerCase()
+                              ).length
+                          )
                         ),
                       ),
-
-                      GestureDetector(
-                        onTap: () async => await showSearch(
-                          context: context,
-                          delegate: RidesSearchDelegatebyId(rides: context.read<RidesProvider>().allRides)
-                        ),
-                        child: _searchField),
-                      Expanded(
-                        child: FractionallySizedBox(
-                          widthFactor: 1,
-                          heightFactor: 1,
-                          child: ListView(
-                            children: List.generate(
-                              regions.length, 
-                              (index) => _listCard(
-                                regionName: regions[index],
-                                rideCount: allRides.where(
-                                  (element) => element.region.toLowerCase() == regions[index].toLowerCase()
-                                  ).length
-                              )
-                            ),
-                          ),
-                        )
-                      )
-                    ],
+                    ),
                   ),
-                ),
+                )
               )
-            )
-          ],
+            ],
+          ),
         )
       ),
     );
   }
 
   Widget get _searchField => Container(
-    margin: EdgeInsets.symmetric(horizontal: 32.w),
+    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+    margin: EdgeInsets.symmetric(horizontal: 4.w),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(50),
-      boxShadow: [
-        BoxShadow(
-          offset: const Offset(0, 4),
-          blurRadius: 4,
-          color: Colors.black.withOpacity(0.1)
+      color: AppColors.backgroundOpaque.withOpacity(0.7),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.search_rounded,
+          color: Colors.black.withOpacity(0.5),
+          size: 20,
+        ),
+        SizedBox(width: 8.w,),
+        Text(
+          'Search Rides by id, location, creator...',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.5),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w300
+          ),
         )
-      ]
-    ),
-    child: TextField(
-      controller: _searchController,
-      enabled: false,
-      decoration: InputDecoration(
-        constraints: BoxConstraints.tight(Size(double.maxFinite, 40.h)),
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Search Rides by id, location, creator...',
-        hintStyle: TextStyle(
-          fontSize: 10.sp,
-          color: const Color.fromRGBO(124, 124, 124, 1)
-        ),
-        prefixIcon: const Icon(
-          Icons.search,
-          color: Color.fromRGBO(124, 124, 124, 1)
-        ),
-        
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-      ),
-    ),
+      ],
+    )
   );
 
   Widget _listCard ({required String regionName, required int rideCount})=> GestureDetector(
@@ -141,30 +125,27 @@ class _RegionsPageState extends State<RegionsPage> {
       MaterialPageRoute(builder: (context)=> RidesPage(regionString: regionName) )
     ),
     child: Container(
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
-      margin: EdgeInsets.only(top: 20.h, bottom: 4.h, left: 24.w, right: 24.w),
-      height: 100.h,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      margin: EdgeInsets.only(top: 12.h),
+      height: 85.h,
       width: double.maxFinite,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10)
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 12.0.w),
-                child: Text(
-                  regionName,
-                  style: const TextStyle(
-                    color: Color.fromRGBO(12, 33, 74, 1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400
-                  ),
+              Text(
+                regionName,
+                style: TextStyle(
+                  color: const Color.fromRGBO(12, 33, 74, 1),
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400
                 ),
               ),
               Icon(
@@ -175,18 +156,17 @@ class _RegionsPageState extends State<RegionsPage> {
           ),
           Container(
             width: double.maxFinite,
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: AppColors.mainBlue,
-              borderRadius: BorderRadius.circular(10)
+              color: const Color.fromRGBO(83, 130, 218, 0.925),
+              borderRadius: BorderRadius.circular(10.r)
             ),
-            height: 36.h,
-            alignment: Alignment.centerRight,
+            alignment: Alignment.centerLeft,
             child: Text(
               '$rideCount Rides Available',
               style: TextStyle(
                 color: rideCount == 0 ? Colors.grey.shade200 : Colors.white,
-                fontSize: 14,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500
               ),
             ),
@@ -195,7 +175,7 @@ class _RegionsPageState extends State<RegionsPage> {
       ),
     ),
   );
-  final _searchController = TextEditingController();
+  // final _searchController = TextEditingController();
 }
 
 class _AppBar extends StatelessWidget {

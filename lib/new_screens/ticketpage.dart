@@ -1,15 +1,17 @@
-import 'package:dart_casing/dart_casing.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:shareride/new_screens/alt_button.dart';
+// import 'package:shareride/new_screens/alt_button.dart';
 import 'package:shareride/providers/rides_provider.dart';
 import 'package:shareride/utilities/app_colors.dart';
+import 'package:shareride/utilities/button1.dart';
 
 import '../models/ride.dart';
 import '../providers/service_time_provider.dart';
 import '../providers/user_provider.dart';
 import '../utilities/app_snackbar.dart';
+import '../utilities/app_text_styles.dart';
 
 class TicketPage extends StatefulWidget {
   const TicketPage({super.key, required this.ride});
@@ -20,7 +22,7 @@ class TicketPage extends StatefulWidget {
 }
 
 class _TicketPageState extends State<TicketPage> {
-  var buttonState = ButtonState.normal;
+  ButtonState buttonState = ButtonState.normal;
   toggleButtonState(ButtonState state){
     setState(() {
       buttonState = state;
@@ -32,308 +34,58 @@ class _TicketPageState extends State<TicketPage> {
     Ride ride = context.watch<RidesProvider>().allRides.where(
       (element) => element.docid == widget.ride.docid).toList().first;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundOpaque,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _appbar,
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: Offset(0, -4.h),
-                      blurRadius: 4.h
-                    )
-                  ]
-                ),
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  heightFactor: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Padding(
-                      //   padding: EdgeInsets.only(left: 16.0.w, top: 20.h, ),
-                      //   child: Text(
-                      //     'Your Ticket',
-                      //     style: TextStyle(
-                      //       color: Colors.black,
-                      //       fontSize: 17.sp,
-                      //       fontWeight: FontWeight.w500
-                      //     ),
-                      //   ),
-                      // ), 
-                      // SizedBox(height: 60.h,),
-                      _fromTo(
-                        from: Casing.titleCase(ride.from),
-                        to: ride.to
-                      ),
-                      // SizedBox(height: 64.h,),
-                      _timeID,
-                      // SizedBox(height: 64.h,),
-                      _passengerBar,
-                      // SizedBox(height: 64.h,),
-                      GestureDetector(
-                        onTap: () {
-                          cancelRideFunction(ride);
-                        },
-                        child: AltButton(state: buttonState, isLocked: ride.isLocked)
-                      ),
-                      // SizedBox(height: 64.h,)
-                                  
-                    ],
+            const SizedBox(width: double.maxFinite,),
+            _spacing(24.h),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0.w),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 12.sp,
+                      child: Icon(Icons.arrow_back_ios, color: const Color.fromRGBO(27, 27, 31, 1),size: 16.sp,)),
                   ),
                 ),
+              ],
+            ),
+            
+            InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(0),
+              maxScale: 1.5,
+              minScale: 1.0,
+              scaleEnabled: true,
+              panEnabled: true,
+
+              child: Column(
+                children: [
+                  const SizedBox(width: double.maxFinite,),
+                  _spacing(24.h),
+                  _ticketWrap(),
+                  _spacing(32.h),
+                ],
               )
+            ),
+              
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+              child: ride.isLocked? 
+              _lockededButton : 
+              GestureDetector(
+                onTap: ()=> cancelRideFunction(ride),
+                child: AppButton(label: 'Cancel Ticket', state: buttonState, height: 40.h,)),
             )
+              
           ],
         ),
       ),
     );
-  }
-  Widget get _appbar => SizedBox(
-    height: 80.h,
-    width: double.maxFinite,
-    child: Row(
-      children: [
-        IconButton(
-          onPressed: ()=> Navigator.pop(context), 
-          icon: Icon(
-            Icons.arrow_back,
-            size:  24.sp,
-            color: Colors.black,
-          )
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.w),
-          child: Image.asset('assets/shareridelogo.png'),
-        )
-      ],
-    ),
-  );
-
-  Widget _fromTo ({required String from, required String to})=> Padding(
-    padding: EdgeInsets.only(left: 16.w, right: 16.w),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'From',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  color: const Color.fromRGBO(161, 161, 161, 1)
-                ),
-              ),
-              Text(
-                from,
-                overflow: TextOverflow.clip,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Inter'
-                ),
-              )
-            ],
-          ),
-        ),
-        SizedBox(height: 16.h,),
-        const Divider(
-          thickness: 1,
-          color: Color.fromRGBO(210, 210, 210, 1),
-        ),
-        SizedBox(height: 16.h,),
-        SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'To',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  // letterSpacing: 1.sp,
-                  color: const Color.fromRGBO(161, 161, 161, 1)
-                ),
-              ),
-              Text(
-                to,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28.sp,
-                  // letterSpacing: 1.sp,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Inter'
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-
-  Widget get _timeID => Padding(
-    padding: EdgeInsets.symmetric(horizontal: 16.w),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Time',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                // letterSpacing: 1.sp,
-                color: const Color.fromRGBO(161, 161, 161, 1)
-              ),
-            ),
-            const SizedBox(height: 4,),
-            Text(
-              context.read<ServiceTimeProvider>().getServiceTime(widget.ride.time.toLowerCase()),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                // letterSpacing: 1.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter'
-              ),
-            ),
-  
-            Text(
-              '${DateTime.now().day} ${monthString(DateTime.now().month)}, ${DateTime.now().year}',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                fontSize: 14.sp,
-                color: const Color.fromRGBO(160, 160, 160, 1)
-              ),
-            )
-  
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Bus ID',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                color: const Color.fromRGBO(161, 161, 161, 1)
-              ),
-            ),
-            const SizedBox(height: 4,),
-            Text(
-              widget.ride.id,
-              style: TextStyle(
-                color: AppColors.mainBlue,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter'
-              ),
-            ),
-  
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Ticket ID',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                color: const Color.fromRGBO(161, 161, 161, 1)
-              ),
-            ),
-            const SizedBox(height: 4,),
-            Text(
-              context.read<UserProvider>().user.uid.characters.take(5).toString().toUpperCase(),
-              style: TextStyle(
-                color: AppColors.mainBlue,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter'
-              ),
-            ),
-  
-          ],
-        )
-      ],
-    ),
-  );
-
-  Widget get _passengerBar {
-    Ride ride = context.watch<RidesProvider>().allRides.where(
-      (element) => element.docid == widget.ride.docid
-    ).toList().first;
-    return SizedBox(
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              ride.participants.length, 
-              (index) => Container(
-                height: 30.w,
-                width: 30.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: AppColors.mainBlue
-                ),
-              )
-            ) + List.generate(
-              7- ride.participants.length, 
-              (index) => Container(
-                height: 30.w,
-                width: 30.w,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromRGBO(217, 217, 217, 1)
-                  ),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-              )
-            ),
-          ),
-          const SizedBox(height: 6,),
-          Text(
-            ride.remainingPassengersText,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: const Color.fromRGBO(77, 77, 77, 1)
-            ),
-          ),          
-  
-        ]
-      ),
-    ),
-  );
   }
 
   cancelRideFunction(Ride ride,) async{
@@ -359,6 +111,193 @@ class _TicketPageState extends State<TicketPage> {
     }
   }
 
+  Widget _spacing(double height) => SizedBox(height: height,);
+
+  Widget get _circleStuff => Container(
+    height: 12,
+    width: 10,
+    decoration: BoxDecoration(
+      color: AppColors.backgroundOpaque,
+      borderRadius: BorderRadius.circular(10)
+    ),
+    // child: ,
+  );
+
+  Widget get _ticketTop => SizedBox(
+    width: double.maxFinite,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(19, (index) => _circleStuff),
+    ),
+  );
+
+  Widget get _ticketBody {
+    Ride ride = context.watch<RidesProvider>().allRides.where(
+      (element) => element.docid == widget.ride.docid).toList().first;
+    return Container(
+      width: double.maxFinite,
+      // height: 371,
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox.square(
+                dimension: 40,
+                child: Image.asset('assets/shareridelogo.png')
+              ),
+              const Text(
+                'Bus Pass',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300
+                ),
+              )
+            ],
+          ),
+          _spacing(12),
+          _busProgress(7-ride.participants.length, ride.remainingPassengersText),
+          _spacing(12),
+          _ticketDetails(ride)
+    
+        ],
+      ),
+    );
+  }
+
+  Widget _ticketDetails (Ride ride)=> Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+    child: SizedBox(
+      width: double.maxFinite,
+      child: Column(
+        children: [
+          CustomPaint(
+            painter: DashedLine(),
+            child: const SizedBox(
+              height: 1,
+              width: double.maxFinite,
+            ),
+          ),
+          _spacing(12),
+          _detailText('Coming from', '${ride.from}, ${ride.region}'),
+          _spacing(12),
+          _detailText('Going to', ride.to),
+          _spacing(12),
+          _detailText('Bus id', ride.id),
+          _spacing(12),
+          _detailText('Ticket id', context.read<UserProvider>().user.uid.characters.take(5).toString().toUpperCase()),
+          _spacing(12),
+          _detailText('Time/Schedule', context.read<ServiceTimeProvider>().getTimeFormat(ride.time.toLowerCase()),),
+          _spacing(12),
+          _spacing(50),
+          _spacing(12),
+          CustomPaint(
+            painter: DashedLine(),
+            child: const SizedBox(
+              height: 1,
+              width: double.maxFinite,
+            ),
+          ),
+          _spacing(12),
+          ticketNb(context.read<ServiceTimeProvider>().getTimeFormat(ride.time.toLowerCase()))
+
+        ],
+      ),
+    ),
+  );
+
+  Widget ticketNb(String serviceTime)=> Text(
+    "NB: Bus arrives $serviceTime, leaves 10mins later without delay. Incomplete Bus rides would be cancelled and fully refunded. Bus passes locks 30mins to the scheduled time if Bus is complete or Up to specified minimum number of passengers before time.",
+    overflow: TextOverflow.clip,
+    style: const TextStyle(
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      color: Color.fromRGBO(0, 0, 0, 0.5),
+      fontWeight: FontWeight.w400
+    ),
+  );
+
+  Widget _detailText(String title, String data)=> Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Text(
+        title,
+        style: const TextStyle(
+          fontSize: 8,
+          fontWeight: FontWeight.w400,
+          color: Color.fromRGBO(0, 0, 0, 0.7)
+        ),
+      ),
+      Text(
+        data,
+        style: const TextStyle(
+          fontSize: 8,
+          fontWeight: FontWeight.w400,
+          color: Color.fromRGBO(0, 0, 0, 1)
+        ),
+      )
+    ],
+  );
+
+  Widget get _circularIndicatorFilled => CircleAvatar(
+    radius: 5,
+    backgroundColor: AppColors.mainBlue,
+  );
+
+  Widget get _circularIndicatorOutlined => Container(
+    height: 10,
+    width: 10,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(        
+        color: const Color.fromRGBO(217, 217, 217, 1)
+      )
+    ),
+  );
+
+  Widget _busProgress(int remainingPassengers, String text) => SizedBox(
+    height: 30,
+    width: 118,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            color: AppColors.mainBlue,
+            fontSize: 10
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(7-remainingPassengers, (index) => _circularIndicatorFilled)+ List.generate(remainingPassengers, (index) => _circularIndicatorOutlined),
+        )
+      ],
+    ),
+  );
+
+  Widget _ticketWrap() => SizedBox(
+    width: 282,
+    child: Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top:6.0),
+          child: _ticketBody,
+        ),
+        _ticketTop
+      ]
+    ),
+  );
+
   monthString(int val)=> switch (val) {
     1 => 'January',
     2 => 'Febuary',
@@ -375,4 +314,45 @@ class _TicketPageState extends State<TicketPage> {
     // TODO: Handle this case.
     int() => null,
   };
+  
+  Widget get _lockededButton => Container(
+    margin: EdgeInsets.only(top: 15),
+    height: 40.h,
+    width: double.maxFinite,
+    decoration: BoxDecoration(
+      color: AppColors.mainBlue.withOpacity(0.2),
+      borderRadius: BorderRadius.circular(5)
+    ),
+    child: Center(
+      child: Text(
+        'Cancel Ticket (Locked)',
+        style: AppTextStyle.button1,
+      ),
+    ),
+  );
+}
+
+class DashedLine extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    List<Offset> offsets = [];
+    int step = 3;
+    for (var i = 0; i < size.width; i=i+step) {
+      offsets.add(Offset(i.toDouble(), 0));
+    }
+    canvas.drawPoints(
+      PointMode.lines,
+      offsets, 
+      Paint()
+      ..strokeWidth = 0.5
+      ..color = const Color.fromRGBO(158, 158, 158, 0.5)
+      
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+  
 }

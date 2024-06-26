@@ -25,202 +25,168 @@ class _RidesPageState extends State<RidesPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            _appbar,
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundGrey,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: Offset(0, -4.h),
-                      blurRadius: 4.h
-                    )
-                  ]
-                ),
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  heightFactor: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal:16.0.w,
-                          vertical: 16.h
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${widget.regionString} Rides',
-                              style: TextStyle(
-                                color: const Color.fromRGBO(27, 27, 31, 1),
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                            Builder(
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () => showBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    enableDrag: true,
-                                    context: context, 
-                                    builder: (context)=> CreateRideFormSheet(
-                                      locations: context.read<LocationsProvider>().locations.where(
-                                        (element) => element.region.toLowerCase() == widget.regionString.toLowerCase()
-                                      ).toList(),
-                                    )
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.add,
-                                          color: AppColors.mainBlue,
-                                        ),
-                                        SizedBox(width: 8.w,),
-                                        Text(
-                                          'Create New',
-                                          style: TextStyle(
-                                            color: AppColors.mainBlue,
-                                            fontWeight: FontWeight.w600
-                                            
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            )
-                          ],
-                        ),
-                      ),
+        child: Padding(
+          padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 18.h),
+          child: Column(
+            children: [
 
-                      GestureDetector(
-                        onTap: () async => await showSearch(
-                          context: context,
-                          delegate: RidesSearchDelegate(rides: rides)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 12.sp,
+                      child: Icon(Icons.arrow_back_ios, color: const Color.fromRGBO(27, 27, 31, 1),size: 16.sp,)),
+                  ),
+                  SizedBox(width: 8.w,),
+                  Expanded(
+                    child: Text(
+                      '${widget.regionString} Rides',
+                      style: TextStyle(
+                        color: const Color.fromRGBO(27, 27, 31, 1),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400
+                      ),
+                    ),
+                  ),
+                  createButton
+                ],
+              ),
+              _spacing(24.h),        
+              GestureDetector(
+                onTap: () async => await showSearch(
+                  context: context,
+                  delegate: RidesSearchDelegate(rides: rides)
+                ),
+                child: _searchField
+              ),
+              _spacing(24.h),
+              Expanded(
+                child: rides.isEmpty? 
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'No Active Rides Here',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w400,                              
+                      color: AppColors.emptyListText
+                    ),
+                  ),
+                )
+                : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 12.w, right: 12.w, bottom: 12.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundFaint,
+                          borderRadius: BorderRadius.circular(5.r)
                         ),
-                        child: _searchField),
-                      Expanded(
-                        child: rides.isEmpty? 
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'No Active Rides Here',
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w400,                              
-                              color: AppColors.emptyListText
-                            ),
-                          ),
-                        )
-                        : ListView(
+                        child: Column(
                         children: List.generate(
                           rides.length, 
                           (index) => _listCard(rides[index]),),
-                      ))
-                      
-
+                        ),
+                      ),
+                      _spacing(24.h)
                     ],
                   ),
-                ),
-              )
-            )
-          ],
+                )
+              ),
+            ],
+          ),
         )
       ),
     );
   }
 
-  Widget get _appbar => SizedBox(
-    height: 80.h,
-    width: double.maxFinite,
-    child: Row(
-      children: [
-        IconButton(
-          onPressed: ()=> Navigator.pop(context), 
-          icon: Icon(
-            Icons.arrow_back,
-            size:  24.sp,
-            color: Colors.black,
+  Widget _spacing(double height) => SizedBox(height: height,);
+
+  Widget get createButton => Builder(
+    builder: (context) {
+      return GestureDetector(
+        onTap: () => showBottomSheet(
+          backgroundColor: Colors.transparent,
+          enableDrag: true,
+          context: context, 
+          builder: (context)=> CreateRideFormSheet(
+            locations: context.read<LocationsProvider>().locations.where(
+              (element) => element.region.toLowerCase() == widget.regionString.toLowerCase()
+            ).toList(),
           )
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.w),
-          child: Image.asset('assets/shareridelogo.png'),
-        )
-      ],
-    ),
-  );
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(230, 238, 254, 1),
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add,
+                color: AppColors.mainBlue,
+                size: 14.sp,
+              ),
+              SizedBox(width: 4.w,),
+              Text(
+                'Create New',
+                style: TextStyle(
+                  color: AppColors.mainBlue,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12.sp
+                  
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+  ) ;
+
   Widget get _searchField => Container(
-    margin: EdgeInsets.symmetric(
-      vertical: 10,
-      horizontal: 32.w),
+    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+    margin: EdgeInsets.symmetric(horizontal: 4.w),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(50),
-      boxShadow: [
-        BoxShadow(
-          offset: const Offset(0, 4),
-          blurRadius: 4,
-          color: Colors.black.withOpacity(0.1)
+      color: AppColors.backgroundOpaque,
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.search_rounded,
+          color: Colors.black.withOpacity(0.5),
+          size: 20,
+        ),
+        SizedBox(width: 8.w,),
+        Text(
+          'Search Rides by location, time...',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.5),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w300
+          ),
         )
-      ]
-    ),
-    child: TextField(
-      enabled: false,
-      controller: _searchController,
-      decoration: InputDecoration(
-        constraints: BoxConstraints.tight(Size(double.maxFinite, 40.h)),
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Search by location, time',
-        hintStyle: TextStyle(
-          fontSize: 10.sp,
-          color: const Color.fromRGBO(124, 124, 124, 1)
-        ),
-        prefixIcon: const Icon(
-          Icons.search,
-          color: Color.fromRGBO(124, 124, 124, 1)
-        ),
-        
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none
-        ),
-      ),
-    ),
+      ],
+    )
   );
 
   Widget _listCard (Ride ride)=> Builder(
     builder: (context) {
       return GestureDetector(
         onTap: ()=> showBottomSheet(
+          backgroundColor: Colors.transparent,
           context: context, 
           builder: (context) => JoinBottomSheet(ride: ride, context: context,)
         ),
         child: Container(
           padding: const EdgeInsets.all(12),
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 24.w),
+          margin: EdgeInsets.only(top: 8.h),
           width: double.maxFinite,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -253,7 +219,7 @@ class _RidesPageState extends State<RidesPage> {
                             '${ride.from}, ${ride.region}',
                             style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               fontSize: 11.sp
                             ),
                           ),
@@ -264,7 +230,7 @@ class _RidesPageState extends State<RidesPage> {
                     Row(
                       children: [
                         Text(
-                          'To',
+                          'Going to',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 11.sp,
@@ -282,7 +248,7 @@ class _RidesPageState extends State<RidesPage> {
                             ride.to,
                             style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               fontSize: 11.sp
                             ),
                           ),
@@ -293,7 +259,7 @@ class _RidesPageState extends State<RidesPage> {
                     Row(
                       children: [
                         Text(
-                          'Time',
+                          'Schedule',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 11.sp,
@@ -311,7 +277,7 @@ class _RidesPageState extends State<RidesPage> {
                             ride.time,
                             style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               fontSize: 11.sp
                             ),
                           ),
@@ -359,7 +325,5 @@ class _RidesPageState extends State<RidesPage> {
       );
     }
   );
-
-  final _searchController = TextEditingController();
 }
 

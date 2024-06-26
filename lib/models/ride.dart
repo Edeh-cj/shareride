@@ -19,7 +19,7 @@ class Ride {
     required this.participants,
   }): 
   isComplete = participants.length == 7,
-  remainingPassengersText = (participants.length == 7)? 'Complete!' : '${7-participants.length} passengers remaining'
+  remainingPassengersText = (participants.length == 7)? 'Complete!' : 'Awaiting Fill'
   ;
 
   
@@ -35,6 +35,6 @@ class Ride {
     price = 160,
     participants = ['ljdbfhaflubafk', 'kajbfjsfbehf', 'hbafkjsdfha', 'kasfahfasj' ],
     isComplete = remainingPassengers == 0,
-  remainingPassengersText = (remainingPassengers == 0)? 'Complete!' : '$remainingPassengers passengers remaining';
+  remainingPassengersText = (remainingPassengers == 0)? 'Complete!' : 'Awaiting Fill';
 
 }

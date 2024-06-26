@@ -85,10 +85,7 @@ class _DepositPageState extends State<DepositPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                profileCard(
-                                  context.read<UserProvider>().user.name, 
-                                  context.watch<UserProvider>().user.balance.toString()
-                                ),
+                                profileCard,
                                 const SizedBox(height: 12,),
                                 AppFormDecoration.formField(
                                   _amountController, 
@@ -155,6 +152,7 @@ class _DepositPageState extends State<DepositPage> {
                                   child: AppButton(
                                     label: 'Proceed To PayStack', 
                                     state: buttonState,
+                                    height: 40.h,
                                   ),
                                 )
                               ],
@@ -198,73 +196,47 @@ class _DepositPageState extends State<DepositPage> {
     ),
   );
 
-  Widget profileCard(String name, String balance)=> Container(
-    padding: const EdgeInsets.all(16),
-    // margin: const EdgeInsets.symmetric(horizontal: 16),
-    // height: 94.h,
+Widget get profileCard=> Container(
+    padding: EdgeInsets.symmetric(horizontal :10.w, vertical: 10.h),
     width: double.maxFinite,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(0),
-      // boxShadow: [
-      //   BoxShadow(
-      //     color: Colors.black.withOpacity(.25),
-      //     offset: const Offset(0, 4),
-      //     blurRadius: 4
-      //     // spreadRadius: 4,
-      //   )
-      // ],
+      borderRadius: BorderRadius.circular(5),
       gradient:const LinearGradient(
         colors: [
           Color.fromRGBO(12, 33, 74, 1),
-          Color.fromRGBO(27, 78, 176, 1)
+          Color.fromRGBO(29, 78, 176, 1)
         ]
       )
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Hello, $name',
+          'Available Balance',
           style: TextStyle(
-            fontSize: 20.sp,
-            letterSpacing: 1.sp,
-            fontWeight: FontWeight.w300,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w400,
             color: Colors.white
           ),          
         ),
-        Text(
-          'Balance: NGN $balance',
-          style: TextStyle(
-            fontSize: 13.sp,
-            letterSpacing: 1.sp,
-            fontWeight: FontWeight.w500,
-            color: Colors.white
-          ),
+        _spacing(14.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'N${context.watch<UserProvider>().user.balance.toString()}.00',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.white
+              ),
+            ),
+          ],
         )
       ],
     ),
   );
-  // _depositFunction() {
-  //   if (_signinFormKey.currentState!.validate() && _buttonState != ButtonState.loading) {
-  //     setState(() {
-  //       _buttonState = ButtonState.loading; 
-  //     });
-  //     context.read<AuthenticationProvider>().signinUser(
-  //       email: _emailController.text,
-  //       amount: _amountController.text
-  //     ).then(
-  //       (value) {
-  //         setState(() {
-  //           _buttonState = ButtonState.success; 
-  //         });
-  //       }
-  //     ).catchError((e){
-  //       AppSnackBar.error(e);
-  //       setState(() {
-  //         _buttonState = ButtonState.error; 
-  //       });
-  //     });
-  //   }
-  // }
+
+  Widget _spacing(double height)=> SizedBox(height: height,);
 }
