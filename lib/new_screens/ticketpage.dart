@@ -214,7 +214,7 @@ class _TicketPageState extends State<TicketPage> {
   );
 
   Widget ticketNb(String serviceTime)=> Text(
-    "NB: Bus arrives $serviceTime, leaves 10mins later without delay. Incomplete Bus rides would be cancelled and fully refunded. Bus passes locks 30mins to the scheduled time if Bus is complete or Up to specified minimum number of passengers before time.",
+    "NB: Bus arrives $serviceTime, leaves 10mins later without delay. Incomplete Bus rides would be cancelled and fully refunded. Bus passes lock 30mins to the scheduled time if Bus is up to specified minimum number of commuters before time, tickets won't be refunded in that case.",
     overflow: TextOverflow.clip,
     style: const TextStyle(
       fontSize: 10,
