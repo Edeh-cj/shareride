@@ -20,23 +20,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp
-  ]);
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-      ChangeNotifierProvider(create: (_) => RidesProvider()),
-      ChangeNotifierProvider(create: (_) => PriceProvider()),
-      ChangeNotifierProvider(create: (_) => LocationsProvider()),
-      ChangeNotifierProvider(create: (_) => ServiceTimeProvider()),
-      ChangeNotifierProvider(create: (_) => UserProvider()),
-      ChangeNotifierProvider(create: (_) => WhatsappProvider()),
-    ],
-    child: const ScreenUtilInit(
-      designSize: Size(360, 800),  
-      child: MyApp()
-  )));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+    ChangeNotifierProvider(create: (_) => RidesProvider()),
+    ChangeNotifierProvider(create: (_) => PriceProvider()),
+    ChangeNotifierProvider(create: (_) => LocationsProvider()),
+    ChangeNotifierProvider(create: (_) => ServiceTimeProvider()),
+    ChangeNotifierProvider(create: (_) => UserProvider()),
+    ChangeNotifierProvider(create: (_) => WhatsappProvider()),
+  ], child: const ScreenUtilInit(designSize: Size(360, 800), child: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -59,14 +52,12 @@ class _MyAppState extends State<MyApp> {
       title: 'ShareRide',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-        fontFamily: 'Spartan'
-      ),
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+          fontFamily: 'Spartan'),
       home: Center(
-        child: context.watch<UserProvider>().uid != null
-            ? const Homepage()
-            : const SigninPage()
-          ),
+          child: context.watch<UserProvider>().uid != null
+              ? const Homepage()
+              : const SigninPage()),
     );
   }
 }
